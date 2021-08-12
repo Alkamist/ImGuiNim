@@ -251,7 +251,7 @@ proc GetWorkCenter*(this: ImGuiViewport): ImVec2 {.noSideEffect.}
 # imgui_internal.h
 ###############################################################
 
-{.push discardable, importcpp, header: "imgui.h".}
+{.push discardable, importcpp, header: "imgui_internal.h".}
 
 proc GetCenter*(this: ImRect): ImVec2 {.noSideEffect.}
 proc GetSize*(this: ImRect): ImVec2 {.noSideEffect.}

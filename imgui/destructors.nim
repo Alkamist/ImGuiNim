@@ -24,7 +24,7 @@ proc destroyImFont*(this: var ImFont)
 # imgui_internal.h
 ###############################################################
 
-{.push importcpp, header: "imgui.h".}
+{.push importcpp, header: "imgui_internal.h".}
 
 proc destroyImPool*[T](this: var ImPool[T])
 

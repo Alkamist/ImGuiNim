@@ -398,7 +398,7 @@ withNamespace("ImGui"):
 ###############################################################
 
 # Regular and inline functions:
-{.push discardable, importc, header: "imgui.h".}
+{.push discardable, importc, header: "imgui_internal.h".}
 
 proc ImHashData*(data: pointer; data_size: csize_t; seed: ImU32 = 0): ImGuiID
 proc ImHashStr*(data: cstring; data_size: csize_t = 0; seed: ImU32 = 0): ImGuiID
@@ -506,7 +506,7 @@ proc ImGetDirQuadrantFromDelta*(dx: cfloat; dy: cfloat): ImGuiDir
 {.pop.}
 
 # API functions:
-{.push discardable, header: "imgui.h".}
+{.push discardable, header: "imgui_internal.h".}
 
 withNamespace("ImGui"):
   proc GetCurrentWindowRead*(): ptr ImGuiWindow

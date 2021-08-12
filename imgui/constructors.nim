@@ -92,7 +92,7 @@ makeConstructors:
 # imgui_internal.h
 ###############################################################
 
-{.push header: "imgui.h".}
+{.push header: "imgui_internal.h".}
 
 makeConstructors:
   proc constructImVec1*(): ImVec1
