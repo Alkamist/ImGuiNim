@@ -5,7 +5,7 @@ import
 macro makeConstructors(n: untyped): untyped =
   for procedure in n:
     var nameStr = procedure.name.strVal
-    nameStr.removePrefix("constructor")
+    nameStr.removePrefix("construct")
 
     procedure.addPragma(ident "constructor")
 

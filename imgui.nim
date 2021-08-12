@@ -3,33 +3,53 @@ import
          functions, methods,
          constructors, destructors]
 
-# Render()
-
-{.emit: """
+{.emit: """/*INCLUDESECTION*/
 #include "imgui.h"
 #include "imgui_internal.h"
 """.}
 
-
 proc main =
-  var vec = constructImVec2(5, 1)
-  echo vec.x
+  let test = constructImGuiIO()
 
 main()
 
 
-# import std/macros
 
-# macro withNamespace(namespace: static[string], n: untyped): untyped =
+# import std/[macros, strutils]
+
+# macro makeConstructors(n: untyped): untyped =
 #   for procedure in n:
+#     var nameStr = procedure.name.strVal
+#     nameStr.removePrefix("construct")
+
+#     procedure.addPragma(ident "constructor")
+
 #     procedure.addPragma(
 #       nnkExprColonExpr.newTree(
 #         ident "importcpp",
-#         newStrLitNode(namespace & "::" & procedure.name.strVal),
+#         newStrLitNode(nameStr & "(@)"),
 #       ),
 #     )
 #   n
 
+# type
+#   ImVec2 = object
+#   ImVec4 = object
+#   ImVector[T] = object
+#   ImGuiStyle = object
+#   ImGuiIO = object
+
 # expandMacros:
-#   withNamespace("ImGui"):
-#     proc CreateContext*(value: float): int
+#   makeConstructors:
+#     proc constructImVec2*(): ImVec2
+#     proc constructImVec2*(x: cfloat; y: cfloat): ImVec2
+
+#     proc constructImVec4*(): ImVec4
+#     proc constructImVec4*(x: cfloat; y: cfloat; z: cfloat; w: cfloat): ImVec4
+
+#     proc constructImVector*[T](): ImVector[T]
+#     proc constructImVector*[T](src: ImVector[T]): ImVector[T]
+
+#     proc constructImGuiStyle*(): ImGuiStyle
+
+#     proc constructImGuiIO*(): ImGuiIO
