@@ -1,156 +1,167 @@
-import flags, types
+import
+  std/[macros, strutils],
+  flags, types
+
+macro makeConstructors(n: untyped): untyped =
+  for procedure in n:
+    var nameStr = procedure.name.strVal
+    nameStr.removePrefix("constructor")
+
+    procedure.addPragma(ident "constructor")
+
+    procedure.addPragma(
+      nnkExprColonExpr.newTree(
+        ident "importcpp",
+        newStrLitNode(nameStr & "(@)"),
+      ),
+    )
+  n
 
 ###############################################################
 # imgui.h
 ###############################################################
 
-{.push importcpp.}
+makeConstructors:
+  proc constructImVec2*(): ImVec2
+  proc constructImVec2*(x: cfloat; y: cfloat): ImVec2
 
-proc constructImVec2*(): ImVec2 {.constructor.}
-proc constructImVec2*(x: cfloat; y: cfloat): ImVec2 {.constructor.}
+  proc constructImVec4*(): ImVec4
+  proc constructImVec4*(x: cfloat; y: cfloat; z: cfloat; w: cfloat): ImVec4
 
-proc constructImVec4*(): ImVec4 {.constructor.}
-proc constructImVec4*(x: cfloat; y: cfloat; z: cfloat; w: cfloat): ImVec4 {.constructor.}
+  proc constructImVector*[T](): ImVector[T]
+  proc constructImVector*[T](src: ImVector[T]): ImVector[T]
 
-proc constructImVector*[T](): ImVector[T] {.constructor.}
-proc constructImVector*[T](src: ImVector[T]): ImVector[T] {.constructor.}
+  proc constructImGuiStyle*(): ImGuiStyle
 
-proc constructImGuiStyle*(): ImGuiStyle {.constructor.}
+  proc constructImGuiIO*(): ImGuiIO
 
-proc constructImGuiIO*(): ImGuiIO {.constructor.}
+  proc constructImGuiInputTextCallbackData*(): ImGuiInputTextCallbackData
 
-proc constructImGuiInputTextCallbackData*(): ImGuiInputTextCallbackData {.constructor.}
+  proc constructImGuiPayload*(): ImGuiPayload
 
-proc constructImGuiPayload*(): ImGuiPayload {.constructor.}
+  proc constructImGuiTableColumnSortSpecs*(): ImGuiTableColumnSortSpecs
 
-proc constructImGuiTableColumnSortSpecs*(): ImGuiTableColumnSortSpecs {.constructor.}
+  proc constructImGuiTableSortSpecs*(): ImGuiTableSortSpecs
 
-proc constructImGuiTableSortSpecs*(): ImGuiTableSortSpecs {.constructor.}
+  proc constructImGuiOnceUponAFrame*(): ImGuiOnceUponAFrame
 
-proc constructImGuiOnceUponAFrame*(): ImGuiOnceUponAFrame {.constructor.}
+  proc constructImGuiTextFilter*(default_filter: cstring = ""): ImGuiTextFilter
 
-proc constructImGuiTextFilter*(default_filter: cstring = ""): ImGuiTextFilter {.constructor.}
+  proc constructImGuiTextFilterImGuiTextRange*(): ImGuiTextFilterImGuiTextRange
+  proc constructImGuiTextFilterImGuiTextRange*(b: cstring; e: cstring): ImGuiTextFilterImGuiTextRange
 
-proc constructImGuiTextFilterImGuiTextRange*(): ImGuiTextFilterImGuiTextRange {.constructor.}
-proc constructImGuiTextFilterImGuiTextRange*(b: cstring; e: cstring): ImGuiTextFilterImGuiTextRange {.constructor.}
+  proc constructImGuiTextBuffer*(): ImGuiTextBuffer
 
-proc constructImGuiTextBuffer*(): ImGuiTextBuffer {.constructor.}
+  proc constructImGuiStorageImGuiStoragePair*(key: ImGuiID; val_i: cint): ImGuiStorageImGuiStoragePair
+  proc constructImGuiStorageImGuiStoragePair*(key: ImGuiID; val_f: cfloat): ImGuiStorageImGuiStoragePair
+  proc constructImGuiStorageImGuiStoragePair*(key: ImGuiID; val_p: pointer): ImGuiStorageImGuiStoragePair
 
-proc constructImGuiStorageImGuiStoragePair*(key: ImGuiID; val_i: cint): ImGuiStorageImGuiStoragePair {.constructor.}
-proc constructImGuiStorageImGuiStoragePair*(key: ImGuiID; val_f: cfloat): ImGuiStorageImGuiStoragePair {.constructor.}
-proc constructImGuiStorageImGuiStoragePair*(key: ImGuiID; val_p: pointer): ImGuiStorageImGuiStoragePair {.constructor.}
+  proc constructImGuiListClipper*(): ImGuiListClipper
 
-proc constructImGuiListClipper*(): ImGuiListClipper {.constructor.}
+  proc constructImColor*(): ImColor
+  proc constructImColor*(r: cint; g: cint; b: cint; a: cint = 255): ImColor
+  proc constructImColor*(rgba: ImU32): ImColor
+  proc constructImColor*(r: cfloat; g: cfloat; b: cfloat; a: cfloat = 1.0f): ImColor
+  proc constructImColor*(col: ImVec4): ImColor
 
-proc constructImColor*(): ImColor {.constructor.}
-proc constructImColor*(r: cint; g: cint; b: cint; a: cint = 255): ImColor {.constructor.}
-proc constructImColor*(rgba: ImU32): ImColor {.constructor.}
-proc constructImColor*(r: cfloat; g: cfloat; b: cfloat; a: cfloat = 1.0f): ImColor {.constructor.}
-proc constructImColor*(col: ImVec4): ImColor {.constructor.}
+  proc constructImDrawCmd*(): ImDrawCmd
 
-proc constructImDrawCmd*(): ImDrawCmd {.constructor.}
+  proc constructImDrawListSplitter*(): ImDrawListSplitter
 
-proc constructImDrawListSplitter*(): ImDrawListSplitter {.constructor.}
+  proc constructImDrawList*(shared_data: ptr ImDrawListSharedData): ImDrawList
 
-proc constructImDrawList*(shared_data: ptr ImDrawListSharedData): ImDrawList {.constructor.}
+  proc constructImDrawData*(): ImDrawData
 
-proc constructImDrawData*(): ImDrawData {.constructor.}
+  proc constructImFontConfig*(): ImFontConfig
 
-proc constructImFontConfig*(): ImFontConfig {.constructor.}
+  proc constructImFontGlyphRangesBuilder*(): ImFontGlyphRangesBuilder
 
-proc constructImFontGlyphRangesBuilder*(): ImFontGlyphRangesBuilder {.constructor.}
+  proc constructImFontAtlasCustomRect*(): ImFontAtlasCustomRect
 
-proc constructImFontAtlasCustomRect*(): ImFontAtlasCustomRect {.constructor.}
+  proc constructImFontAtlas*(): ImFontAtlas
 
-proc constructImFontAtlas*(): ImFontAtlas {.constructor.}
+  proc constructImFont*(): ImFont
 
-proc constructImFont*(): ImFont {.constructor.}
-
-proc constructImGuiViewport*(): ImGuiViewport {.constructor.}
-
-{.pop.}
+  proc constructImGuiViewport*(): ImGuiViewport
 
 ###############################################################
 # imgui_internal.h
 ###############################################################
 
-{.push importcpp.}
+makeConstructors:
+  proc constructImVec1*(): ImVec1
+  proc constructImVec1*(x: cfloat): ImVec1
 
-proc constructImVec1*(): ImVec1 {.constructor.}
-proc constructImVec1*(x: cfloat): ImVec1 {.constructor.}
+  proc constructImVec2ih*(): ImVec2ih
+  proc constructImVec2ih*(x: cshort; y: cshort): ImVec2ih
+  proc constructImVec2ih*(rhs: ImVec2): ImVec2ih
 
-proc constructImVec2ih*(): ImVec2ih {.constructor.}
-proc constructImVec2ih*(x: cshort; y: cshort): ImVec2ih {.constructor.}
-proc constructImVec2ih*(rhs: ImVec2): ImVec2ih {.constructor.}
+  proc constructImRect*(): ImRect
+  proc constructImRect*(min: ImVec2; max: ImVec2): ImRect
+  proc constructImRect*(v: ImVec4): ImRect
+  proc constructImRect*(x1: cfloat; y1: cfloat; x2: cfloat; y2: cfloat): ImRect
 
-proc constructImRect*(): ImRect {.constructor.}
-proc constructImRect*(min: ImVec2; max: ImVec2): ImRect {.constructor.}
-proc constructImRect*(v: ImVec4): ImRect {.constructor.}
-proc constructImRect*(x1: cfloat; y1: cfloat; x2: cfloat; y2: cfloat): ImRect {.constructor.}
+  proc constructImBitArray*[BITCOUNT: static[cint]](): ImBitArray[BITCOUNT]
 
-proc constructImBitArray*[BITCOUNT: static[cint]](): ImBitArray[BITCOUNT] {.constructor.}
+  proc constructImSpan*[T](): ImSpan[T]
+  proc constructImSpan*[T](data: ptr T; size: cint): ImSpan[T]
+  proc constructImSpan*[T](data: ptr T; data_end: ptr T): ImSpan[T]
 
-proc constructImSpan*[T](): ImSpan[T] {.constructor.}
-proc constructImSpan*[T](data: ptr T; size: cint): ImSpan[T] {.constructor.}
-proc constructImSpan*[T](data: ptr T; data_end: ptr T): ImSpan[T] {.constructor.}
+  proc constructImSpanAllocator*[CHUNKS: static[cint]](): ImSpanAllocator[CHUNKS]
 
-proc constructImSpanAllocator*[CHUNKS: static[cint]](): ImSpanAllocator[CHUNKS] {.constructor.}
+  proc constructImPool*[T](): ImPool[T]
 
-proc constructImPool*[T](): ImPool[T] {.constructor.}
+  proc constructImDrawListSharedData*(): ImDrawListSharedData
 
-proc constructImDrawListSharedData*(): ImDrawListSharedData {.constructor.}
+  proc constructImGuiStyleMod*(idx: ImGuiStyleVar; v: cint): ImGuiStyleMod
+  proc constructImGuiStyleMod*(idx: ImGuiStyleVar; v: cfloat): ImGuiStyleMod
+  proc constructImGuiStyleMod*(idx: ImGuiStyleVar; v: ImVec2): ImGuiStyleMod
 
-proc constructImGuiStyleMod*(idx: ImGuiStyleVar; v: cint): ImGuiStyleMod {.constructor.}
-proc constructImGuiStyleMod*(idx: ImGuiStyleVar; v: cfloat): ImGuiStyleMod {.constructor.}
-proc constructImGuiStyleMod*(idx: ImGuiStyleVar; v: ImVec2): ImGuiStyleMod {.constructor.}
+  proc constructImGuiMenuColumns*(): ImGuiMenuColumns
 
-proc constructImGuiMenuColumns*(): ImGuiMenuColumns {.constructor.}
+  proc constructImGuiInputTextState*(): ImGuiInputTextState
 
-proc constructImGuiInputTextState*(): ImGuiInputTextState {.constructor.}
+  proc constructImGuiPopupData*(): ImGuiPopupData
 
-proc constructImGuiPopupData*(): ImGuiPopupData {.constructor.}
+  proc constructImGuiNavItemData*(): ImGuiNavItemData
 
-proc constructImGuiNavItemData*(): ImGuiNavItemData {.constructor.}
+  proc constructImGuiNextWindowData*(): ImGuiNextWindowData
 
-proc constructImGuiNextWindowData*(): ImGuiNextWindowData {.constructor.}
+  proc constructImGuiNextItemData*(): ImGuiNextItemData
 
-proc constructImGuiNextItemData*(): ImGuiNextItemData {.constructor.}
+  proc constructImGuiPtrOrIndex*(`ptr`: pointer): ImGuiPtrOrIndex
+  proc constructImGuiPtrOrIndex*(index: cint): ImGuiPtrOrIndex
 
-proc constructImGuiPtrOrIndex*(`ptr`: pointer): ImGuiPtrOrIndex {.constructor.}
-proc constructImGuiPtrOrIndex*(index: cint): ImGuiPtrOrIndex {.constructor.}
+  proc constructImGuiOldColumnData*(): ImGuiOldColumnData
+  proc constructImGuiOldColumns*(): ImGuiOldColumns
 
-proc constructImGuiOldColumnData*(): ImGuiOldColumnData {.constructor.}
-proc constructImGuiOldColumns*(): ImGuiOldColumns {.constructor.}
+  proc constructImGuiViewportP*(): ImGuiViewportP
 
-proc constructImGuiViewportP*(): ImGuiViewportP {.constructor.}
+  proc constructImGuiWindowSettings*(): ImGuiWindowSettings
 
-proc constructImGuiWindowSettings*(): ImGuiWindowSettings {.constructor.}
+  proc constructImGuiSettingsHandler*(): ImGuiSettingsHandler
 
-proc constructImGuiSettingsHandler*(): ImGuiSettingsHandler {.constructor.}
+  proc constructImGuiMetricsConfig*(): ImGuiMetricsConfig
 
-proc constructImGuiMetricsConfig*(): ImGuiMetricsConfig {.constructor.}
+  proc constructImGuiStackSizes*(): ImGuiStackSizes
 
-proc constructImGuiStackSizes*(): ImGuiStackSizes {.constructor.}
+  proc constructImGuiContextHook*(): ImGuiContextHook
 
-proc constructImGuiContextHook*(): ImGuiContextHook {.constructor.}
+  proc constructImGuiContext*(shared_font_atlas: ptr ImFontAtlas): ImGuiContext
 
-proc constructImGuiContext*(shared_font_atlas: ptr ImFontAtlas): ImGuiContext {.constructor.}
+  proc constructImGuiWindow*(context: ptr ImGuiContext; name: cstring): ImGuiWindow
 
-proc constructImGuiWindow*(context: ptr ImGuiContext; name: cstring): ImGuiWindow {.constructor.}
+  proc constructImGuiLastItemDataBackup*(): ImGuiLastItemDataBackup
 
-proc constructImGuiLastItemDataBackup*(): ImGuiLastItemDataBackup {.constructor.}
+  proc constructImGuiTabItem*(): ImGuiTabItem
+  proc constructImGuiTabBar*(): ImGuiTabBar
 
-proc constructImGuiTabItem*(): ImGuiTabItem {.constructor.}
-proc constructImGuiTabBar*(): ImGuiTabBar {.constructor.}
+  proc constructImGuiTableColumn*(): ImGuiTableColumn
 
-proc constructImGuiTableColumn*(): ImGuiTableColumn {.constructor.}
+  proc constructImGuiTable*(): ImGuiTable
 
-proc constructImGuiTable*(): ImGuiTable {.constructor.}
+  proc constructImGuiTableTempData*(): ImGuiTableTempData
 
-proc constructImGuiTableTempData*(): ImGuiTableTempData {.constructor.}
+  proc constructImGuiTableColumnSettings*(): ImGuiTableColumnSettings
 
-proc constructImGuiTableColumnSettings*(): ImGuiTableColumnSettings {.constructor.}
-
-proc constructImGuiTableSettings*(): ImGuiTableSettings {.constructor.}
-
-{.pop.}
+  proc constructImGuiTableSettings*(): ImGuiTableSettings

@@ -11,7 +11,11 @@ import
 """.}
 
 
-let vec = constructImVec2()
+proc main =
+  var vec = constructImVec2(5, 1)
+  echo vec.x
+
+main()
 
 
 # import std/macros
