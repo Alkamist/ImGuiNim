@@ -4,7 +4,7 @@ import types
 # imgui.h
 ###############################################################
 
-{.push importcpp.}
+{.push importcpp, header: "imgui.h".}
 
 proc destroyImVector*[T](this: var ImVector[T])
 
@@ -24,7 +24,7 @@ proc destroyImFont*(this: var ImFont)
 # imgui_internal.h
 ###############################################################
 
-{.push importcpp.}
+{.push importcpp, header: "imgui.h".}
 
 proc destroyImPool*[T](this: var ImPool[T])
 

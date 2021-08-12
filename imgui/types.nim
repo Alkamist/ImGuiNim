@@ -1,7 +1,7 @@
 import flags
 
-{.pragma: imguiType, importc, nodecl.}
-{.pragma: imguiInternalType, importc, nodecl.}
+{.pragma: imguiType, importcpp, header: "imgui.h".}
+{.pragma: imguiInternalType, importcpp, header: "imgui.h".}
 {.pragma: imstbTextEditType, importcpp, header: "imstb_textedit.h".}
 
 const

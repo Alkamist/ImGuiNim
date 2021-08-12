@@ -4,7 +4,7 @@ import flags, types, helpers, constructors
 # imgui.h
 ###############################################################
 
-{.push importcpp.}
+{.push discardable, importcpp, header: "imgui.h".}
 
 proc `[]`*(this: ImVec2; idx: csize_t): cfloat {.noSideEffect.}
 proc `[]`*(this: var ImVec2; idx: csize_t): var cfloat
@@ -251,7 +251,7 @@ proc GetWorkCenter*(this: ImGuiViewport): ImVec2 {.noSideEffect.}
 # imgui_internal.h
 ###############################################################
 
-{.push importcpp.}
+{.push discardable, importcpp, header: "imgui.h".}
 
 proc GetCenter*(this: ImRect): ImVec2 {.noSideEffect.}
 proc GetSize*(this: ImRect): ImVec2 {.noSideEffect.}

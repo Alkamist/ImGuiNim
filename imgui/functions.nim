@@ -7,7 +7,7 @@ macro withNamespace(namespace: static[string], n: untyped): untyped =
     procedure.addPragma(
       nnkExprColonExpr.newTree(
         ident "importcpp",
-        newStrLitNode(namespace & "::" & procedure.name.strVal),
+        newStrLitNode(namespace & "::" & procedure.name.strVal & "(@)"),
       ),
     )
   n
@@ -17,7 +17,7 @@ macro withNamespace(namespace: static[string], n: untyped): untyped =
 ###############################################################
 
 # API functions:
-{.push nodecl.}
+{.push discardable, header: "imgui.h".}
 
 withNamespace("ImGui"):
   proc CreateContext*(shared_font_atlas: ptr ImFontAtlas = nil): ptr ImGuiContext
@@ -398,7 +398,7 @@ withNamespace("ImGui"):
 ###############################################################
 
 # Regular and inline functions:
-{.push importc, nodecl.}
+{.push discardable, importc, header: "imgui.h".}
 
 proc ImHashData*(data: pointer; data_size: csize_t; seed: ImU32 = 0): ImGuiID
 proc ImHashStr*(data: cstring; data_size: csize_t = 0; seed: ImU32 = 0): ImGuiID
@@ -506,7 +506,7 @@ proc ImGetDirQuadrantFromDelta*(dx: cfloat; dy: cfloat): ImGuiDir
 {.pop.}
 
 # API functions:
-{.push nodecl.}
+{.push discardable, header: "imgui.h".}
 
 withNamespace("ImGui"):
   proc GetCurrentWindowRead*(): ptr ImGuiWindow

@@ -21,6 +21,8 @@ macro makeConstructors(n: untyped): untyped =
 # imgui.h
 ###############################################################
 
+{.push header: "imgui.h".}
+
 makeConstructors:
   proc constructImVec2*(): ImVec2
   proc constructImVec2*(x: cfloat; y: cfloat): ImVec2
@@ -84,9 +86,13 @@ makeConstructors:
 
   proc constructImGuiViewport*(): ImGuiViewport
 
+{.pop.}
+
 ###############################################################
 # imgui_internal.h
 ###############################################################
+
+{.push header: "imgui.h".}
 
 makeConstructors:
   proc constructImVec1*(): ImVec1
@@ -165,3 +171,5 @@ makeConstructors:
   proc constructImGuiTableColumnSettings*(): ImGuiTableColumnSettings
 
   proc constructImGuiTableSettings*(): ImGuiTableSettings
+
+{.pop.}
