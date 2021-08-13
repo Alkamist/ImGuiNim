@@ -57,6 +57,71 @@ type
   ImGuiViewportFlags* = distinct cint
   ImFontAtlasFlags* = distinct cint
 
+template implementFlag(F): untyped =
+  proc `not`*(a: F): F {.inline.} = (not a.cint).F
+  proc `and`*(a, b: F): F {.inline.} = (a.cint and b.cint).F
+  proc `or`*(a, b: F): F {.inline.} = (a.cint or b.cint).F
+  proc `==`*(a, b: F): bool {.inline.} = a.cint == b.cint
+  proc `==`*(a: F, b: int): bool {.inline.} = a.cint == b
+
+implementFlag(ImGuiItemFlags)
+implementFlag(ImGuiItemAddFlags)
+implementFlag(ImGuiItemStatusFlags)
+implementFlag(ImGuiInputTextFlags)
+implementFlag(ImGuiButtonFlags)
+implementFlag(ImGuiSliderFlags)
+implementFlag(ImGuiSelectableFlags)
+implementFlag(ImGuiTreeNodeFlags)
+implementFlag(ImGuiSeparatorFlags)
+implementFlag(ImGuiTextFlags)
+implementFlag(ImGuiTooltipFlags)
+implementFlag(ImGuiLayoutType)
+implementFlag(ImGuiLogType)
+implementFlag(ImGuiAxis)
+implementFlag(ImGuiPlotType)
+implementFlag(ImGuiInputSource)
+implementFlag(ImGuiInputReadMode)
+implementFlag(ImGuiNavHighlightFlags)
+implementFlag(ImGuiNavDirSourceFlags)
+implementFlag(ImGuiNavMoveFlags)
+implementFlag(ImGuiNavForward)
+implementFlag(ImGuiNavLayer)
+implementFlag(ImGuiPopupPositionPolicy)
+implementFlag(ImGuiNextWindowDataFlags)
+implementFlag(ImGuiNextItemDataFlags)
+implementFlag(ImGuiOldColumnFlags)
+implementFlag(ImGuiContextHookType)
+implementFlag(ImGuiTabBarFlags)
+implementFlag(ImGuiWindowFlags)
+implementFlag(ImGuiPopupFlags)
+implementFlag(ImGuiComboFlags)
+implementFlag(ImGuiTabItemFlags)
+implementFlag(ImGuiTableFlags)
+implementFlag(ImGuiTableColumnFlags)
+implementFlag(ImGuiTableRowFlags)
+implementFlag(ImGuiTableBgTarget)
+implementFlag(ImGuiFocusedFlags)
+implementFlag(ImGuiHoveredFlags)
+implementFlag(ImGuiDragDropFlags)
+implementFlag(ImGuiDataType)
+implementFlag(ImGuiDir)
+implementFlag(ImGuiSortDirection)
+implementFlag(ImGuiKey)
+implementFlag(ImGuiKeyModFlags)
+implementFlag(ImGuiNavInput)
+implementFlag(ImGuiConfigFlags)
+implementFlag(ImGuiBackendFlags)
+implementFlag(ImGuiCol)
+implementFlag(ImGuiStyleVar)
+implementFlag(ImGuiColorEditFlags)
+implementFlag(ImGuiMouseButton)
+implementFlag(ImGuiMouseCursor)
+implementFlag(ImGuiCond)
+implementFlag(ImDrawFlags)
+implementFlag(ImDrawListFlags)
+implementFlag(ImGuiViewportFlags)
+implementFlag(ImFontAtlasFlags)
+
 const
   ImGuiItemFlags_None* = 0.ImGuiItemFlags
   ImGuiItemFlags_NoTabStop* = (1 shl 0).ImGuiItemFlags

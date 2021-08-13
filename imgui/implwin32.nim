@@ -38,8 +38,8 @@ proc init*(hWnd: pointer) =
   # Setup backend capabilities flags
   io.BackendPlatformUserData = bd.addr
   io.BackendPlatformName = "imgui_impl_win32"
-  io.BackendFlags = (io.BackendFlags.int or ImGuiBackendFlags_HasMouseCursors.int).ImGuiBackendFlags
-  io.BackendFlags = (io.BackendFlags.int or ImGuiBackendFlags_HasSetMousePos.int).ImGuiBackendFlags
+  io.BackendFlags = io.BackendFlags or ImGuiBackendFlags_HasMouseCursors
+  io.BackendFlags = io.BackendFlags or ImGuiBackendFlags_HasSetMousePos
 
   bd.hWnd = cast[HWND](hWnd)
   bd.WantUpdateHasGamepad = true
@@ -79,11 +79,11 @@ proc shutdown*() =
 
 proc updateMouseCursor(): bool =
   var io = GetIO()
-  if (io.ConfigFlags.int and ImGuiConfigFlags_NoMouseCursorChange.int) != 0:
+  if (io.ConfigFlags and ImGuiConfigFlags_NoMouseCursorChange) != 0:
     return false
 
   var imguiCursor = GetMouseCursor()
-  if (imguiCursor.int == ImGuiMouseCursor_None.int) or io.MouseDrawCursor:
+  if (imguiCursor == ImGuiMouseCursor_None) or io.MouseDrawCursor:
     # Hide OS mouse cursor if imgui is drawing it or if it wants no cursor
     SetCursor(0)
 
@@ -144,10 +144,10 @@ proc updateMousePosition() =
 proc updateGamepads() =
   var io = GetIO()
 
-  for input in io.NavInputs.mitems:
-    input = 0.0
+  for i in io.NavInputs.low .. io.NavInputs.high:
+    io.NavInputs[i] = 0.0
 
-  if (io.ConfigFlags.int and ImGuiConfigFlags_NavEnableGamepad.int) == 0:
+  if (io.ConfigFlags and ImGuiConfigFlags_NavEnableGamepad) == 0:
     return
 
   # Calling XInputGetState() every frame on disconnected gamepads is unfortunately too slow.
@@ -157,13 +157,13 @@ proc updateGamepads() =
     bd.HasGamepad = XInputGetCapabilities(0, XINPUT_FLAG_GAMEPAD, caps.addr) == ERROR_SUCCESS
     bd.WantUpdateHasGamepad = false
 
-  io.BackendFlags = (io.BackendFlags.int and not ImGuiBackendFlags_HasGamepad.int).ImGuiBackendFlags
+  io.BackendFlags = io.BackendFlags and not ImGuiBackendFlags_HasGamepad
 
   var xInputState: XINPUT_STATE
 
   if bd.HasGamepad and XInputGetState(0, xInputState.addr) == ERROR_SUCCESS:
     var gamepad = xInputState.Gamepad
-    io.BackendFlags = (io.BackendFlags.int or ImGuiBackendFlags_HasGamepad.int).ImGuiBackendFlags
+    io.BackendFlags = io.BackendFlags or ImGuiBackendFlags_HasGamepad
 
     template mapButton(navId, button): untyped =
       io.NavInputs[navId] =
@@ -320,8 +320,8 @@ proc procHandler*(hWnd: HWND, msg: UINT, wParam: WPARAM, lParam: LPARAM): LRESUL
       io.KeyAlt = down
 
   of WM_KILLFOCUS:
-    for value in io.KeysDown.mitems:
-      value = false
+    for i in io.KeysDown.low .. io.KeysDown.high:
+      io.KeysDown[i] = false
     io.KeyCtrl = false
     io.KeyShift = false
     io.KeyAlt =  false
