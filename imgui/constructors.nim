@@ -1,6 +1,6 @@
 import
   std/[macros, strutils],
-  flags, types
+  enums, types
 
 macro makeConstructors(n: untyped): untyped =
   for procedure in n:

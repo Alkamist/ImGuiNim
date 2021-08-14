@@ -1,4 +1,4 @@
-import flags
+import enums, flags
 
 {.pragma: imguiType, importcpp, header: "imgui.h".}
 {.pragma: imguiInternalType, importcpp, header: "imgui.h".}
@@ -138,7 +138,7 @@ type
     AntiAliasedFill*: bool
     CurveTessellationTol*: cfloat
     CircleTessellationMaxError*: cfloat
-    Colors*: array[ImGuiCol_COUNT, ImVec4]
+    Colors*: array[ImGuiCol, ImVec4]
 
   ImFontConfig* {.imguiType.} = object
     FontData*: pointer
@@ -237,7 +237,7 @@ type
     MouseDoubleClickTime*: cfloat
     MouseDoubleClickMaxDist*: cfloat
     MouseDragThreshold*: cfloat
-    KeyMap*: array[ImGuiKey_COUNT, cint]
+    KeyMap*: array[ImGuiKey, cint]
     KeyRepeatDelay*: cfloat
     KeyRepeatRate*: cfloat
     UserData*: pointer
@@ -272,7 +272,7 @@ type
     KeyAlt*: bool
     KeySuper*: bool
     KeysDown*: array[512, bool]
-    NavInputs*: array[ImGuiNavInput_COUNT, cfloat]
+    NavInputs*: array[ImGuiNavInput, cfloat]
     WantCaptureMouse*: bool
     WantCaptureKeyboard*: bool
     WantTextInput*: bool
@@ -302,8 +302,8 @@ type
     MouseDragMaxDistanceSqr*: array[5, cfloat]
     KeysDownDuration*: array[512, cfloat]
     KeysDownDurationPrev*: array[512, cfloat]
-    NavInputsDownDuration*: array[ImGuiNavInput_COUNT, cfloat]
-    NavInputsDownDurationPrev*: array[ImGuiNavInput_COUNT, cfloat]
+    NavInputsDownDuration*: array[ImGuiNavInput, cfloat]
+    NavInputsDownDurationPrev*: array[ImGuiNavInput, cfloat]
     PenPressure*: cfloat
     InputQueueSurrogate*: ImWchar16
     InputQueueCharacters*: ImVector[ImWchar]
@@ -1039,8 +1039,8 @@ type
     RootWindowForTitleBarHighlight*: ptr ImGuiWindow
     RootWindowForNav*: ptr ImGuiWindow
     NavLastChildNavWindow*: ptr ImGuiWindow
-    NavLastIds*: array[ImGuiNavLayer_COUNT, ImGuiID]
-    NavRectRel*: array[ImGuiNavLayer_COUNT, ImRect]
+    NavLastIds*: array[ImGuiNavLayer, ImGuiID]
+    NavRectRel*: array[ImGuiNavLayer, ImRect]
     MemoryDrawListIdxCapacity*: cint
     MemoryDrawListVtxCapacity*: cint
     MemoryCompacted*: bool

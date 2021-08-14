@@ -25,6 +25,9 @@ macro implementFlags(flagName, flagSetName, flags): untyped =
       for flag in flagSet:
         result = (result.int or flag.int).`flagSetName`
 
+    converter toFlags*(flag: `flagName`): `flagSetName` =
+      flag.`flagSetName`
+
 implementFlags(ImGuiItemFlag, ImGuiItemFlags):
   NoTabStop = 1 shl 0
   ButtonRepeat = 1 shl 1

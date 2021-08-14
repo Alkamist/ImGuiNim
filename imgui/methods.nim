@@ -1,4 +1,4 @@
-import flags, types, helpers, constructors
+import flags, enums, types, helpers, constructors
 
 ###############################################################
 # imgui.h
@@ -127,8 +127,8 @@ proc PopTextureID*(this: var ImDrawList)
 proc GetClipRectMin*(this: ImDrawList): ImVec2 {.noSideEffect.}
 proc GetClipRectMax*(this: ImDrawList): ImVec2 {.noSideEffect.}
 proc AddLine*(this: var ImDrawList; p1: ImVec2; p2: ImVec2; col: ImU32; thickness: cfloat = 1.0f)
-proc AddRect*(this: var ImDrawList; p_min: ImVec2; p_max: ImVec2; col: ImU32; rounding: cfloat = 0.0f; flags: ImDrawFlags = ImDrawFlags_None; thickness: cfloat = 1.0f)
-proc AddRectFilled*(this: var ImDrawList; p_min: ImVec2; p_max: ImVec2; col: ImU32; rounding: cfloat = 0.0f; flags: ImDrawFlags = ImDrawFlags_None)
+proc AddRect*(this: var ImDrawList; p_min: ImVec2; p_max: ImVec2; col: ImU32; rounding: cfloat = 0.0f; flags: ImDrawFlags = 0.ImDrawFlags; thickness: cfloat = 1.0f)
+proc AddRectFilled*(this: var ImDrawList; p_min: ImVec2; p_max: ImVec2; col: ImU32; rounding: cfloat = 0.0f; flags: ImDrawFlags = 0.ImDrawFlags)
 proc AddRectFilledMultiColor*(this: var ImDrawList; p_min: ImVec2; p_max: ImVec2; col_upr_left: ImU32; col_upr_right: ImU32; col_bot_right: ImU32; col_bot_left: ImU32)
 proc AddQuad*(this: var ImDrawList; p1: ImVec2; p2: ImVec2; p3: ImVec2; p4: ImVec2; col: ImU32; thickness: cfloat = 1.0f)
 proc AddQuadFilled*(this: var ImDrawList; p1: ImVec2; p2: ImVec2; p3: ImVec2; p4: ImVec2; col: ImU32)
@@ -146,17 +146,17 @@ proc AddBezierCubic*(this: var ImDrawList; p1: ImVec2; p2: ImVec2; p3: ImVec2; p
 proc AddBezierQuadratic*(this: var ImDrawList; p1: ImVec2; p2: ImVec2; p3: ImVec2; col: ImU32; thickness: cfloat; num_segments: cint = 0)
 proc AddImage*(this: var ImDrawList; user_texture_id: ImTextureID; p_min: ImVec2; p_max: ImVec2; uv_min: ImVec2 = constructImVec2(0, 0); uv_max: ImVec2 = constructImVec2(1, 1); col: ImU32 = IM_COL32_WHITE)
 proc AddImageQuad*(this: var ImDrawList; user_texture_id: ImTextureID; p1: ImVec2; p2: ImVec2; p3: ImVec2; p4: ImVec2; uv1: ImVec2 = constructImVec2(0, 0); uv2: ImVec2 = constructImVec2(1, 0); uv3: ImVec2 = constructImVec2(1, 1); uv4: ImVec2 = constructImVec2(0, 1); col: ImU32 = IM_COL32_WHITE)
-proc AddImageRounded*(this: var ImDrawList; user_texture_id: ImTextureID; p_min: ImVec2; p_max: ImVec2; uv_min: ImVec2; uv_max: ImVec2; col: ImU32; rounding: cfloat; flags: ImDrawFlags = ImDrawFlags_None)
+proc AddImageRounded*(this: var ImDrawList; user_texture_id: ImTextureID; p_min: ImVec2; p_max: ImVec2; uv_min: ImVec2; uv_max: ImVec2; col: ImU32; rounding: cfloat; flags: ImDrawFlags = 0.ImDrawFlags)
 proc PathClear*(this: var ImDrawList)
 proc PathLineTo*(this: var ImDrawList; pos: ImVec2)
 proc PathLineToMergeDuplicate*(this: var ImDrawList; pos: ImVec2)
 proc PathFillConvex*(this: var ImDrawList; col: ImU32)
-proc PathStroke*(this: var ImDrawList; col: ImU32; flags: ImDrawFlags = ImDrawFlags_None; thickness: cfloat = 1.0f)
+proc PathStroke*(this: var ImDrawList; col: ImU32; flags: ImDrawFlags = 0.ImDrawFlags; thickness: cfloat = 1.0f)
 proc PathArcTo*(this: var ImDrawList; center: ImVec2; radius: cfloat; a_min: cfloat; a_max: cfloat; num_segments: cint = 0)
 proc PathArcToFast*(this: var ImDrawList; center: ImVec2; radius: cfloat; a_min_of_12: cint; a_max_of_12: cint)
 proc PathBezierCubicCurveTo*(this: var ImDrawList; p2: ImVec2; p3: ImVec2; p4: ImVec2; num_segments: cint = 0)
 proc PathBezierQuadraticCurveTo*(this: var ImDrawList; p2: ImVec2; p3: ImVec2; num_segments: cint = 0)
-proc PathRect*(this: var ImDrawList; rect_min: ImVec2; rect_max: ImVec2; rounding: cfloat = 0.0f; flags: ImDrawFlags = ImDrawFlags_None)
+proc PathRect*(this: var ImDrawList; rect_min: ImVec2; rect_max: ImVec2; rounding: cfloat = 0.0f; flags: ImDrawFlags = 0.ImDrawFlags)
 proc AddCallback*(this: var ImDrawList; callback: ImDrawCallback; callback_data: pointer)
 proc AddDrawCmd*(this: var ImDrawList)
 proc CloneOutput*(this: ImDrawList): ptr ImDrawList {.noSideEffect.}
