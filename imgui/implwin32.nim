@@ -1,6 +1,6 @@
 import
   winim/lean,
-  flags, types, functions, methods, constructors
+  flags, enums, types, functions, methods
 
 when not defined(IMGUI_IMPL_WIN32_DISABLE_GAMEPAD):
   import xinput
@@ -38,8 +38,8 @@ proc init*(hWnd: pointer) =
   # Setup backend capabilities flags
   io.BackendPlatformUserData = bd.addr
   io.BackendPlatformName = "imgui_impl_win32"
-  io.BackendFlags = io.BackendFlags or ImGuiBackendFlags_HasMouseCursors
-  io.BackendFlags = io.BackendFlags or ImGuiBackendFlags_HasSetMousePos
+  io.BackendFlags = io.BackendFlags or ImGuiBackendFlag.HasMouseCursors
+  io.BackendFlags = io.BackendFlags or ImGuiBackendFlag.HasSetMousePos
 
   bd.hWnd = cast[HWND](hWnd)
   bd.WantUpdateHasGamepad = true
@@ -79,28 +79,28 @@ proc shutdown*() =
 
 proc updateMouseCursor(): bool =
   var io = GetIO()
-  if (io.ConfigFlags and ImGuiConfigFlags_NoMouseCursorChange) != 0:
+  if (io.ConfigFlags and ImGuiConfigFlag.NoMouseCursorChange).int != 0:
     return false
 
   var imguiCursor = GetMouseCursor()
-  if (imguiCursor == ImGuiMouseCursor_None) or io.MouseDrawCursor:
+  if (imguiCursor == ImGuiMouseCursor.None) or io.MouseDrawCursor:
     # Hide OS mouse cursor if imgui is drawing it or if it wants no cursor
     SetCursor(0)
 
   else:
     # Show OS mouse cursor
-    var win32Cursor = IDC_ARROW
-    case imguiCursor:
-    of ImGuiMouseCursor_Arrow: win32Cursor = IDC_ARROW
-    of ImGuiMouseCursor_TextInput: win32Cursor = IDC_IBEAM
-    of ImGuiMouseCursor_ResizeAll: win32Cursor = IDC_SIZEALL
-    of ImGuiMouseCursor_ResizeEW: win32Cursor = IDC_SIZEWE
-    of ImGuiMouseCursor_ResizeNS: win32Cursor = IDC_SIZENS
-    of ImGuiMouseCursor_ResizeNESW: win32Cursor = IDC_SIZENESW
-    of ImGuiMouseCursor_ResizeNWSE: win32Cursor = IDC_SIZENWSE
-    of ImGuiMouseCursor_Hand: win32Cursor = IDC_HAND
-    of ImGuiMouseCursor_NotAllowed: win32Cursor = IDC_NO
-    else: discard
+    var win32Cursor =
+      case imguiCursor:
+      of ImGuiMouseCursor.Arrow: IDC_ARROW
+      of ImGuiMouseCursor.TextInput: IDC_IBEAM
+      of ImGuiMouseCursor.ResizeAll: IDC_SIZEALL
+      of ImGuiMouseCursor.ResizeEW: IDC_SIZEWE
+      of ImGuiMouseCursor.ResizeNS: IDC_SIZENS
+      of ImGuiMouseCursor.ResizeNESW: IDC_SIZENESW
+      of ImGuiMouseCursor.ResizeNWSE: IDC_SIZENWSE
+      of ImGuiMouseCursor.Hand: IDC_HAND
+      of ImGuiMouseCursor.NotAllowed: IDC_NO
+      else: IDC_ARROW
 
     SetCursor(LoadCursor(0, win32Cursor))
 
@@ -147,7 +147,7 @@ proc updateGamepads() =
   for i in io.NavInputs.low .. io.NavInputs.high:
     io.NavInputs[i] = 0.0
 
-  if (io.ConfigFlags and ImGuiConfigFlags_NavEnableGamepad) == 0:
+  if (io.ConfigFlags and ImGuiConfigFlag.NavEnableGamepad).int == 0:
     return
 
   # Calling XInputGetState() every frame on disconnected gamepads is unfortunately too slow.
@@ -157,13 +157,13 @@ proc updateGamepads() =
     bd.HasGamepad = XInputGetCapabilities(0, XINPUT_FLAG_GAMEPAD, caps.addr) == ERROR_SUCCESS
     bd.WantUpdateHasGamepad = false
 
-  io.BackendFlags = io.BackendFlags and not ImGuiBackendFlags_HasGamepad
+  io.BackendFlags = io.BackendFlags and not ImGuiBackendFlag.HasGamepad
 
   var xInputState: XINPUT_STATE
 
   if bd.HasGamepad and XInputGetState(0, xInputState.addr) == ERROR_SUCCESS:
     var gamepad = xInputState.Gamepad
-    io.BackendFlags = io.BackendFlags or ImGuiBackendFlags_HasGamepad
+    io.BackendFlags = io.BackendFlags or ImGuiBackendFlag.HasGamepad
 
     template mapButton(navId, button): untyped =
       io.NavInputs[navId] =
@@ -179,22 +179,22 @@ proc updateGamepads() =
       if vn > 0.0 and io.NavInputs[navId] < vn:
         io.NavInputs[navId] = vn
 
-    mapButton(ImGuiNavInput_Activate, XINPUT_GAMEPAD_A) # Cross / A
-    mapButton(ImGuiNavInput_Cancel, XINPUT_GAMEPAD_B) # Circle / B
-    mapButton(ImGuiNavInput_Menu, XINPUT_GAMEPAD_X) # Square / X
-    mapButton(ImGuiNavInput_Input, XINPUT_GAMEPAD_Y) # Triangle / Y
-    mapButton(ImGuiNavInput_DpadLeft, XINPUT_GAMEPAD_DPAD_LEFT) # D-Pad Left
-    mapButton(ImGuiNavInput_DpadRight, XINPUT_GAMEPAD_DPAD_RIGHT) # D-Pad Right
-    mapButton(ImGuiNavInput_DpadUp, XINPUT_GAMEPAD_DPAD_UP) # D-Pad Up
-    mapButton(ImGuiNavInput_DpadDown, XINPUT_GAMEPAD_DPAD_DOWN) # D-Pad Down
-    mapButton(ImGuiNavInput_FocusPrev, XINPUT_GAMEPAD_LEFT_SHOULDER) # L1 / LB
-    mapButton(ImGuiNavInput_FocusNext, XINPUT_GAMEPAD_RIGHT_SHOULDER) # R1 / RB
-    mapButton(ImGuiNavInput_TweakSlow, XINPUT_GAMEPAD_LEFT_SHOULDER) # L1 / LB
-    mapButton(ImGuiNavInput_TweakFast, XINPUT_GAMEPAD_RIGHT_SHOULDER) # R1 / RB
-    mapAnalog(ImGuiNavInput_LStickLeft, gamepad.sThumbLX, -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, -32768)
-    mapAnalog(ImGuiNavInput_LStickRight, gamepad.sThumbLX, +XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, +32767)
-    mapAnalog(ImGuiNavInput_LStickUp, gamepad.sThumbLY, +XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, +32767)
-    mapAnalog(ImGuiNavInput_LStickDown, gamepad.sThumbLY, -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, -32767)
+    mapButton(ImGuiNavInput.Activate, XINPUT_GAMEPAD_A) # Cross / A
+    mapButton(ImGuiNavInput.Cancel, XINPUT_GAMEPAD_B) # Circle / B
+    mapButton(ImGuiNavInput.Menu, XINPUT_GAMEPAD_X) # Square / X
+    mapButton(ImGuiNavInput.Input, XINPUT_GAMEPAD_Y) # Triangle / Y
+    mapButton(ImGuiNavInput.DpadLeft, XINPUT_GAMEPAD_DPAD_LEFT) # D-Pad Left
+    mapButton(ImGuiNavInput.DpadRight, XINPUT_GAMEPAD_DPAD_RIGHT) # D-Pad Right
+    mapButton(ImGuiNavInput.DpadUp, XINPUT_GAMEPAD_DPAD_UP) # D-Pad Up
+    mapButton(ImGuiNavInput.DpadDown, XINPUT_GAMEPAD_DPAD_DOWN) # D-Pad Down
+    mapButton(ImGuiNavInput.FocusPrev, XINPUT_GAMEPAD_LEFT_SHOULDER) # L1 / LB
+    mapButton(ImGuiNavInput.FocusNext, XINPUT_GAMEPAD_RIGHT_SHOULDER) # R1 / RB
+    mapButton(ImGuiNavInput.TweakSlow, XINPUT_GAMEPAD_LEFT_SHOULDER) # L1 / LB
+    mapButton(ImGuiNavInput.TweakFast, XINPUT_GAMEPAD_RIGHT_SHOULDER) # R1 / RB
+    mapAnalog(ImGuiNavInput.LStickLeft, gamepad.sThumbLX, -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, -32768)
+    mapAnalog(ImGuiNavInput.LStickRight, gamepad.sThumbLX, +XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, +32767)
+    mapAnalog(ImGuiNavInput.LStickUp, gamepad.sThumbLY, +XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, +32767)
+    mapAnalog(ImGuiNavInput.LStickDown, gamepad.sThumbLY, -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE, -32767)
 
 proc newFrame*() =
   var io = GetIO()

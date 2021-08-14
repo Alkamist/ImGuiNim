@@ -1,4 +1,20 @@
-import std/[macros, intsets]
+import std/macros
+
+template defineFlagOps(flag, flagSet): untyped =
+  proc `or`*(a, b: flag): flagSet = (a.int or b.int).flagSet
+  proc `or`*(a: flagSet, b: flag): flagSet = (a.int or b.int).flagSet
+  proc `and`*(a, b: flag): flagSet = (a.int and b.int).flagSet
+  proc `and`*(a: flagSet, b: flag): flagSet = (a.int and b.int).flagSet
+  proc `not`*(a: flag): flag = (not a.int).flag
+  proc `not`*(a: flagSet): flagSet = (not a.int).flagSet
+
+  proc applyOr*(flagArray: openArray[flag]): flagSet =
+    for value in flagArray:
+      result = result or value
+
+  proc applyAnd*(flagArray: openArray[flag]): flagSet =
+    for value in flagArray:
+      result = result and value
 
 macro implementFlags(flagName, flagSetName, flags): untyped =
   var flagEnum = nnkEnumTy.newTree(newEmptyNode())
@@ -16,17 +32,7 @@ macro implementFlags(flagName, flagSetName, flags): untyped =
       `flagSetName`* = distinct cint
       `flagName`* {.pure.} = `flagEnum`
 
-    proc toSet*(flags: openArray[`flagName`]): IntSet =
-      result = initIntSet()
-      for flag in flags:
-        result.incl flag.int
-
-    proc toFlags*(flagSet: IntSet): `flagSetName` =
-      for flag in flagSet:
-        result = (result.int or flag.int).`flagSetName`
-
-    converter toFlags*(flag: `flagName`): `flagSetName` =
-      flag.`flagSetName`
+    defineFlagOps(`flagName`, `flagSetName`)
 
 implementFlags(ImGuiItemFlag, ImGuiItemFlags):
   NoTabStop = 1 shl 0
